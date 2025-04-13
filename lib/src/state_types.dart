@@ -14,16 +14,19 @@ class SimpleState<T> extends Equatable {
   });
 
   //factory constructor for initial state
-  factory SimpleState.initial() => SimpleState<T>(isLoading: true);
+  factory SimpleState.initial() => SimpleState<T>(isInitial: true);
 
   //factory constructor for loading state
   factory SimpleState.loading() => SimpleState<T>(isLoading: true);
 
   //factory constructor for success state
-  factory SimpleState.success(T data, {String? errorMessage}) =>
-      SimpleState<T>(data: data, errorMessage: errorMessage);
+  factory SimpleState.success(T data) => SimpleState<T>(data: data);
+
+  //factory constructor for the error state
+  factory SimpleState.error(String errorMessage) =>
+      SimpleState<T>(errorMessage: errorMessage);
 
   @override
   // TODO: implement props
-  List<Object?> get props => throw UnimplementedError();
+  List<Object?> get props => [isInitial, isLoading, data, errorMessage];
 }
