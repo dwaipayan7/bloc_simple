@@ -1,5 +1,5 @@
-import 'package:bloc_simple/src/simple_bloc.dart';
-import 'package:bloc_simple/src/state_types.dart';
+import 'package:bloc_simple/simple_bloc.dart';
+import 'package:bloc_simple/state_types.dart';
 import 'package:bloc_test/bloc_test.dart';
 
 void testSimpleBloc<Event, T>({
@@ -14,8 +14,7 @@ void testSimpleBloc<Event, T>({
     description,
     build: build,
     act: (bloc) => bloc.add(event),
-    expect:
-        expect ??
+    expect: expect ??
         () => [SimpleState<T>.loading(), SimpleState<T>.success(expectedData)],
   );
 }

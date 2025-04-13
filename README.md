@@ -1,186 +1,141 @@
-text
-# BlocSimple
+BlocSimple
 
-[![Pub Version](https://img.shields.io/pub/v/bloc_simple.svg)](https://pub.dev/packages/bloc_simple)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A simplified approach to using the BLoC pattern in Flutter, reducing boilerplate and providing utilities for common patterns.
+A simplified approach to using the BLoC pattern in Flutter. Reduce boilerplate, improve readability, and streamline state management with powerful utilities.
 
-## Features
+✨ Features
+🔄 Simplified State Management
+Pre-defined SimpleState<T> with built-in loading, error, and success handling.
 
-- 🔄 **Simplified State Management**: Pre-defined state types with built-in loading/error handling
-- 📝 **Reduced Boilerplate**: Write less code while maintaining the BLoC pattern benefits
-- 🔌 **Repository Integration**: Easy connection between BLoCs/Cubits and data sources
-- 🧪 **Testing Support**: Helper methods for quick and easy testing
-- ⚡ **Async Operation Handling**: Automatic state transitions during async operations
+📉 Minimal Boilerplate
+Just extend SimpleCubit or SimpleBloc, no extra setup required.
 
-## Installation
+🔌 Repository Integration
+Easily connect BLoCs and Cubits to external data sources with RepositoryConnector.
 
-Add `bloc_simple` to your `pubspec.yaml`:
+⚡ Async Execution
+Automatically handle async loading, success, and error states using executeAsync.
 
+🧪 Testing Support
+Built-in testing utilities for unit and widget tests.
+
+🚀 Installation
+Add this to your pubspec.yaml:
+
+yaml
+Copy
+Edit
 dependencies:
-bloc_simple: ^0.1.0
-
-text
-
-## Usage
-
-### Simple Counter Example
-
-// 1. Create a Cubit
+  bloc_simple: ^1.0.2
+📦 Usage
+🧮 Counter Cubit Example
+dart
+Copy
+Edit
 class CounterCubit extends SimpleCubit<int> {
-CounterCubit() : super() {
-// Initialize with 0
-setSuccess(0);
-}
+  CounterCubit() {
+    setSuccess(0); // initial value
+  }
 
-void increment() {
-final currentValue = state.data ?? 0;
-setSuccess(currentValue + 1);
+  void increment() => setSuccess((state.data ?? 0) + 1);
+  void decrement() => setSuccess((state.data ?? 0) - 1);
 }
-
-void decrement() {
-final currentValue = state.data ?? 0;
-setSuccess(currentValue - 1);
-}
-}
-
-// 2. Use it in your UI
-class CounterView extends StatelessWidget {
-@override
-Widget build(BuildContext context) {
-return BlocBuilder<CounterCubit, SimpleState<int>>(
-builder: (context, state) {
-if (state.isLoading) {
-return CircularProgressIndicator();
-}
-
-text
-    if (state.isError) {
-      return Text('Error: ${state.message}');
-    }
-    
-    return Text(
-      'Count: ${state.data ?? 0}',
-      style: TextStyle(fontSize: 24),
-    );
+🖼️ In UI
+dart
+Copy
+Edit
+BlocBuilder<CounterCubit, SimpleState<int>>(
+  builder: (context, state) {
+    if (state.isLoading) return CircularProgressIndicator();
+    if (state.isError) return Text('Error: ${state.message}');
+    return Text('Count: ${state.data ?? 0}');
   },
 );
-}
-}
-
-text
-
-### API Example with Repository
-
-// 1. Define your repository
+🌐 API Example with Repository
+dart
+Copy
+Edit
 class UserRepository {
-Future<List<User>> getUsers() async {
-// Your API implementation
-return yourApiCall();
+  Future<List<User>> getUsers() async {
+    return await fetchUsersFromAPI();
+  }
 }
-}
-
-// 2. Create a Cubit with repository integration
+dart
+Copy
+Edit
 class UserCubit extends RepositoryCubit<List<User>, UserRepository> {
-UserCubit(UserRepository repository) : super(repository);
+  UserCubit(UserRepository repo) : super(repo);
 
-Future<void> loadUsers() async {
-// This automatically handles loading, success, and error states
-await executeAsync(() => getRepository().getUsers());
+  Future<void> loadUsers() async {
+    await executeAsync(() => getRepository().getUsers());
+  }
 }
-}
-
-// 3. Use in your UI with automatic state handling
-class UserListView extends StatelessWidget {
-@override
-Widget build(BuildContext context) {
-return BlocBuilder<UserCubit, SimpleState<List<User>>>(
-builder: (context, state) {
-if (state.isInitial) {
-return Center(child: Text('Press button to load users'));
-}
-
-text
-    if (state.isLoading) {
-      return Center(child: CircularProgressIndicator());
-    }
-    
-    if (state.isError) {
-      return Center(child: Text('Error: ${state.message}'));
-    }
-    
-    final users = state.data!;
+dart
+Copy
+Edit
+BlocBuilder<UserCubit, SimpleState<List<User>>>(
+  builder: (context, state) {
+    if (state.isInitial) return Text("Tap to load users");
+    if (state.isLoading) return CircularProgressIndicator();
+    if (state.isError) return Text("Error: ${state.message}");
     return ListView.builder(
-      itemCount: users.length,
+      itemCount: state.data!.length,
       itemBuilder: (context, index) => ListTile(
-        title: Text(users[index].name),
-        subtitle: Text(users[index].email),
+        title: Text(state.data![index].name),
       ),
     );
   },
 );
-}
-}
-
-text
-
-### Using SimpleBloc with Events
-
-// 1. Define events
+⚙️ SimpleBloc with Events
+dart
+Copy
+Edit
 abstract class CounterEvent {}
 class CounterIncremented extends CounterEvent {}
 class CounterDecremented extends CounterEvent {}
-
-// 2. Create a Bloc
+dart
+Copy
+Edit
 class CounterBloc extends SimpleBloc<CounterEvent, int> {
-CounterBloc() : super();
+  CounterBloc() {
+    setSuccess(0); // Initial state
+  }
 
-@override
-void registerEventHandlers() {
-on<CounterIncremented>(_onIncremented);
-on<CounterDecremented>(_onDecremented);
-
-text
-// Initialize with 0
-setSuccess(0);
+  @override
+  void registerEventHandlers() {
+    on<CounterIncremented>((event, emit) =>
+        emit(SimpleState.success((state.data ?? 0) + 1)));
+    on<CounterDecremented>((event, emit) =>
+        emit(SimpleState.success((state.data ?? 0) - 1)));
+  }
 }
+📊 State Types
+SimpleState<T> provides:
 
-void _onIncremented(CounterIncremented event, Emitter<SimpleState<int>> emit) {
-final currentValue = state.data ?? 0;
-emit(SimpleState.success(currentValue + 1));
-}
+SimpleState.initial() – Initial idle state
 
-void _onDecremented(CounterDecremented event, Emitter<SimpleState<int>> emit) {
-final currentValue = state.data ?? 0;
-emit(SimpleState.success(currentValue - 1));
-}
-}
+SimpleState.loading() – While loading
 
-text
+SimpleState.success(data) – On success
 
-## State Types
+SimpleState.error(message) – On error
 
-`SimpleState<T>` provides a standardized approach to handling common states:
+🧪 Testing Utilities
+Easily test your SimpleCubit or SimpleBloc with:
 
-- `SimpleState.initial()`: Initial state before any operations
-- `SimpleState.loading()`: Loading state during operations
-- `SimpleState.success(data)`: Success state with data
-- `SimpleState.error(exception)`: Error state with exception details
+dart
+Copy
+Edit
+testSimpleCubit<int>(
+  description: 'emits [loading, success] on increment',
+  build: () => CounterCubit(),
+  act: (cubit) => cubit.increment(),
+  expectedData: 1,
+);
+📁 Example App
+Explore the example directory for a working sample.
 
-## Additional Features
-
-- **Automatic Error Handling**: The `executeAsync` method wraps operations in try-catch blocks
-- **Message Support**: Add custom messages to success and error states
-- **Repository Connector**: Mix-in for easy repository integration
-- **Testing Utilities**: Helper methods for testing BLoCs and Cubits
-
-## Example Project
-
-Check out the [example](https://github.com/dwaipayan7/bloc_simple) directory for a complete sample application.
-
-## License
-
-MIT License - see the [LICENSE](LICENSE) file for details.
+📜 License
+MIT © Dwaipayan Biswas
 
 Built with ❤️ by [Dwaipayan Biswas](https://github.com/dwaipayan7)

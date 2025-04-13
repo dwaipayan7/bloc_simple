@@ -1,6 +1,6 @@
 // lib/src/simple_bloc.dart
 import 'package:bloc/bloc.dart';
-import 'package:bloc_simple/src/state_types.dart';
+import 'package:bloc_simple/state_types.dart';
 
 // A simplified Bloc that works with SimpleState and any Event type
 abstract class SimpleBloc<Event, T> extends Bloc<Event, SimpleState<T>> {

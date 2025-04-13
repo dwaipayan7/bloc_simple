@@ -1,5 +1,6 @@
 // Example: Counter using SimpleCubit
-import '../src/simple_cubit.dart';
+
+import '../simple_cubit.dart';
 
 class CounterCubit extends SimpleCubit<int> {
   CounterCubit() : super() {
