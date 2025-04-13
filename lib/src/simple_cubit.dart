@@ -1,6 +1,5 @@
 import 'package:bloc/bloc.dart';
 import 'package:bloc_simple/src/state_types.dart';
-import 'package:equatable/equatable.dart';
 
 class SimpleCubit<T> extends Cubit<SimpleState<T>> {
   SimpleCubit() : super(SimpleState<T>.initial());
