@@ -9,7 +9,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(title: 'Flutter Counter Demo', home: CounterScreen());
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Flutter Counter Demo',
+      home: CounterScreen(),
+    );
   }
 }
 
@@ -29,14 +33,42 @@ class _CounterScreenState extends State<CounterScreen> {
     });
   }
 
+  void _decrement() {
+    setState(() {
+      if (_count == 0) {
+        _count = 0;
+      } else {
+        _count--;
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Counter')),
-      body: Center(child: Text('$_count')),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _increment,
-        child: const Icon(Icons.add),
+      appBar: AppBar(title: const Text('Counter'), centerTitle: true),
+      body: Center(
+        child: Text(
+          '$_count',
+          style: Theme.of(context).textTheme.headlineLarge,
+        ),
+      ),
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton(
+            onPressed: () {
+              _decrement();
+            },
+            child: Icon(Icons.remove),
+          ),
+          SizedBox(height: 15),
+
+          FloatingActionButton(
+            onPressed: _increment,
+            child: const Icon(Icons.add),
+          ),
+        ],
       ),
     );
   }
