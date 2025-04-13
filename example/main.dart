@@ -1,9 +1,8 @@
 // example/main.dart
+import 'package:bloc_simple/simple_cubit.dart';
+import 'package:bloc_simple/state_types.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../simple_cubit.dart';
-import '../state_types.dart';
 
 void main() {
   runApp(const MyApp());
