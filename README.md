@@ -135,6 +135,16 @@ testSimpleCubit<int>(
 📁 Example App
 Explore the example directory for a working sample.
 
+## 🧪 Example
+
+A working example app is available in the [example/](https://github.com/dwaipayan7/bloc_simple) directory.
+
+To run it:
+
+```bash
+cd example
+flutter run
+
 📜 License
 MIT © Dwaipayan Biswas
 
