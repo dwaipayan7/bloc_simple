@@ -1,39 +1,39 @@
+// lib/src/simple_bloc.dart
 import 'package:bloc/bloc.dart';
 import 'package:bloc_simple/src/state_types.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
+/// A simplified Bloc that works with SimpleState and any Event type
 abstract class SimpleBloc<Event, T> extends Bloc<Event, SimpleState<T>> {
   SimpleBloc() : super(SimpleState<T>.initial()) {
     registerEventHandlers();
   }
 
-  //Override the event handler
-
+  /// Override this method to register your event handlers
   void registerEventHandlers();
 
-  //setLoading State
+  /// Set loading state
   void setLoading() => emit(SimpleState<T>.loading());
 
-  //set the success state
-  void setSuccess(T data) => emit(SimpleState<T>.success(data));
+  /// Set success state with data
+  void setSuccess(T data, {String? message}) =>
+      emit(SimpleState<T>.success(data));
 
-  //error message
-  void setError(String errorMessage) =>
-      emit(SimpleState<T>.error(errorMessage));
+  /// Set error state
+  void setError(Exception error) =>
+      emit(SimpleState<T>.error(error.toString()));
 
-  //Future implementation
-
+  /// Execute an async operation with automatic state management
   Future<void> executeAsync(
-    Future<T> Function() operations, {
+    Future<T> Function() operation, {
     String? successMessage,
     bool emitLoadingState = true,
   }) async {
     try {
-      if (emitLoadingState) {
-        setLoading();
-      }
+      if (emitLoadingState) setLoading();
+      final result = await operation();
+      setSuccess(result, message: successMessage);
     } catch (e) {
-      Exception(e.toString());
+      setError(e is Exception ? e : Exception(e.toString()));
     }
   }
 }
