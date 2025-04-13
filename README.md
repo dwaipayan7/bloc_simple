@@ -182,3 +182,5 @@ Check out the [example](https://github.com/dwaipayan7/bloc_simple) directory for
 ## License
 
 MIT License - see the [LICENSE](LICENSE) file for details.
+
+Built with ❤️ by [Dwaipayan Biswas](https://github.com/dwaipayan7)
